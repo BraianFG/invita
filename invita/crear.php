@@ -3,16 +3,18 @@
 <head>
   <?php include "assets/php/head.php"; ?>
   <link rel="stylesheet" href="./assets/css/footer.css">
+  <link rel="stylesheet" href="./assets/css/nav.css">
 </head>
 <body>
 
-<header>
-  <div class="container">
+  <?php include "assets/php/navbar.php" ?>
+
+<section class="fondo-mensaje">
+ <div class="container">
     <h1>Creá tu invitación</h1>
     <p>Completá los datos de tu evento y comenzá con tu invitación digital personalizada</p>
   </div>
-</header>
-
+</section>
 <section class="main-section">
   <div class="container">
     <div class="form-container fade-in-up">
@@ -100,67 +102,6 @@
   <input type="hidden" name="modelo" id="modeloSeleccionado" value="modelo1">
 </div>
 
-<style>
-<style>
-  .scroll-modelos {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-    overflow-x: auto;
-    padding: 10px 0;
-    margin-top: 10px;
-    scroll-snap-type: x mandatory;
-  }
-
-  .scroll-modelos::-webkit-scrollbar {
-    height: 8px;
-  }
-
-  .scroll-modelos::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 4px;
-  }
-
-  .modelo {
-    flex: 0 0 auto;
-    width: 160px;
-    border: 3px solid transparent;
-    border-radius: 12px;
-    scroll-snap-align: center;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: border 0.3s, transform 0.3s;
-    background: white;
-  }
-
-  .modelo img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 12px;
-  }
-
-  .modelo.seleccionado {
-    border: 3px solid #667eea;
-    transform: scale(1.05);
-  }
-
-  @media (max-width: 768px) {
-    .modelo {
-      width: 120px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .modelo {
-      width: 100px;
-    }
-  }
-</style>
-
-</style>
-
 
         <div class="message" id="respuesta" style="display: none;"></div>
 
@@ -180,24 +121,7 @@
   </div>
 </section>
 
-<script>
-  // Mostrar campo "otro" si corresponde
-  document.getElementById('evento').addEventListener('change', function () {
-    const otro = document.getElementById('otroEventoContainer');
-    otro.style.display = (this.value === 'otro') ? 'block' : 'none';
-  });
-
-  // Selección visual del modelo
-  const modelos = document.querySelectorAll('.modelo');
-  const inputModelo = document.getElementById('modeloSeleccionado');
-  modelos.forEach(modelo => {
-    modelo.addEventListener('click', () => {
-      modelos.forEach(m => m.classList.remove('seleccionado'));
-      modelo.classList.add('seleccionado');
-      inputModelo.value = modelo.dataset.modelo;
-    });
-  });
-</script>
+<script src="assets/js/seleccionar.js"></script>
 
 <script src="assets/js/footer.js"></script>
 

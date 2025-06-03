@@ -5,7 +5,20 @@
     <link rel="stylesheet" href="./assets/css/main.css">
  </head>
 <body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <?php include "assets/php/head.php" ?>
+  <link rel="stylesheet" href="./assets/css/main.css">
+    <link rel="stylesheet" href="./assets/css/nav.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
 
+  <!-- NAVBAR -->
+  <?php include "assets/php/navbar.php" ?>
+
+ 
   <!-- Hero Section -->
   <section class="hero">
     <div class="hero-content">
