@@ -1,108 +1,92 @@
-// Manejo del campo condicional
-document.getElementById('evento').addEventListener('change', function () {
-  const otroEventoContainer = document.getElementById('otroEventoContainer');
-  if (this.value === 'otro') {
-    otroEventoContainer.classList.add('show');
-  } else {
-    otroEventoContainer.classList.remove('show');
-  }
-});
-
-// Manejo del archivo
-document.getElementById('imagen').addEventListener('change', function() {
-  const label = document.querySelector('.file-input-label span');
-  if (this.files.length > 0) {
-    label.textContent = this.files[0].name;
-  } else {
-    label.textContent = 'Seleccionar imagen';
-  }
-});
-
-// Envío del formulario
-document.getElementById('invitacionForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-
-  const formData = new FormData(this);
-  const tipoEvento = document.getElementById('evento').value;
-  const otroEvento = document.getElementById('otroEvento').value;
-  const submitBtn = document.querySelector('.submit-btn');
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById('invitacionForm');
   const respuesta = document.getElementById('respuesta');
+  const modelos = document.querySelectorAll(".modelo");
+  const inputModelo = document.getElementById("modeloSeleccionado");
+  const inputImagen = document.getElementById('imagen');
+  const labelImagen = document.querySelector('.file-input-label span');
+  const selectEvento = document.getElementById('evento');
+  const otroEventoContainer = document.getElementById('otroEventoContainer');
+  const submitBtn = document.querySelector('.submit-btn');
 
-  // Estado de carga
-  submitBtn.classList.add('loading');
-  submitBtn.innerHTML = '<i class="fas fa-magic"></i> Creando Invitación...';
+  // ==============================
+  // MANEJO DE MODELOS SELECCIONADOS
+  // ==============================
+  modelos.forEach(modelo => {
+    modelo.addEventListener("click", (e) => {
+      e.preventDefault();
+      modelos.forEach(m => m.classList.remove("seleccionado"));
+      modelo.classList.add("seleccionado");
+      inputModelo.value = modelo.dataset.modelo;
+    });
+  });
 
-  if (tipoEvento === 'otro' && otroEvento.trim() !== '') {
-    formData.set('evento', otroEvento);
-  } else {
-    formData.set('evento', tipoEvento);
-  }
-
-  fetch('assets/php/guardar.php', {
-    method: 'POST',
-    body: formData
-  })
-  .then(res => res.json())
-  .then(data => {
-    const contenedor = document.getElementById('ver_invitaciones');
-    const invitationCard = contenedor.querySelector('.invitation-card');
-    
-    // Resetear estado del botón
-    submitBtn.classList.remove('loading');
-    submitBtn.innerHTML = '<i class="fas fa-magic"></i> Crear Invitación';
-
-    if (data.estado === 'ok') {
-      const imgUrl = 'assets/php/generar_invitacion.php?codigo=' + encodeURIComponent(data.codigo) + '&t=' + Date.now();
-
-      invitationCard.innerHTML = `
-        <h3 style="color: #667eea; margin-bottom: 24px; font-family: 'Playfair Display', serif;">
-          <i class="fas fa-check-circle" style="color: #48bb78; margin-right: 8px;"></i>
-          ¡Invitación creada exitosamente!
-        </h3>
-        
-        <img src="${imgUrl}" alt="Invitación generada" style="max-width: 100%; border-radius: 16px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);">
-        
-        <div class="code-display">
-          <strong>Código:</strong> ${data.codigo}
-        </div>
-        
-        <div class="action-buttons">
-          <a href="${imgUrl}" download="invitacion_${data.codigo}.png" class="action-btn download-btn">
-            <i class="fas fa-download"></i>
-            Descargar
-          </a>
-          <a href="https://wa.me/?text=${encodeURIComponent('¡Hola! Te comparto una invitación: ' + imgUrl)}" 
-             target="_blank" class="action-btn whatsapp-btn">
-            <i class="fab fa-whatsapp"></i>
-            Compartir
-          </a>
-        </div>
-      `;
-
-      contenedor.style.display = 'block';
-      
-      // Scroll suave a los resultados
-      contenedor.scrollIntoView({ behavior: 'smooth' });
-
-      // Mostrar mensaje de éxito
-      respuesta.className = 'message success';
-      respuesta.textContent = '✨ Tu invitación está lista para compartir';
-      respuesta.style.display = 'block';
-
+  // ==============================
+  // MANEJO DEL CAMBIO DE ARCHIVO
+  // ==============================
+  inputImagen?.addEventListener('change', function () {
+    if (this.files.length > 0) {
+      labelImagen.textContent = this.files[0].name;
     } else {
-      respuesta.className = 'message error';
-      respuesta.textContent = 'Error: ' + (data.mensaje || 'Algo salió mal. Intentá nuevamente.');
-      respuesta.style.display = 'block';
-      contenedor.style.display = 'none';
+      labelImagen.textContent = 'Seleccionar imagen';
     }
-  })
-  .catch(err => {
-    console.error(err);
-    submitBtn.classList.remove('loading');
-    submitBtn.innerHTML = '<i class="fas fa-magic"></i> Crear Invitación';
-    
-    respuesta.className = 'message error';
-    respuesta.textContent = 'Error al conectar con el servidor. Verificá tu conexión e intentá nuevamente.';
-    respuesta.style.display = 'block';
+  });
+
+  // ==============================
+  // CAMPO CONDICIONAL "OTRO EVENTO"
+  // ==============================
+  selectEvento.addEventListener('change', function () {
+    if (this.value === 'otro') {
+      otroEventoContainer.classList.add('show');
+    } else {
+      otroEventoContainer.classList.remove('show');
+    }
+  });
+
+  // ==============================
+  // ENVÍO DEL FORMULARIO
+  // ==============================
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const tipoEvento = selectEvento.value;
+    const otroEvento = document.getElementById('otroEvento').value;
+
+    // Reemplazar el valor de evento si se seleccionó "otro"
+    formData.set('evento', tipoEvento === 'otro' ? otroEvento.trim() : tipoEvento);
+
+    // Estado de carga
+    respuesta.style.display = 'none';
+    respuesta.innerHTML = '';
+    submitBtn.classList.add('loading');
+    submitBtn.innerHTML = '<i class="fas fa-magic"></i> Creando Invitación...';
+
+    fetch('assets/php/guardar.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      submitBtn.classList.remove('loading');
+      submitBtn.innerHTML = '<i class="fas fa-magic"></i> Crear Invitación';
+
+      if (data.success && data.file) {
+        // Redirigir al ver_invitaciones.php con la URL de la imagen generada
+         //window.location.href = `assets/php/ver_invitaciones.php?file=${encodeURIComponent(data.file)}`;
+      } else {
+        respuesta.className = 'message error';
+        respuesta.style.display = 'block';
+        respuesta.textContent = data.message || '❌ Ocurrió un error al generar la invitación.';
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      submitBtn.classList.remove('loading');
+      submitBtn.innerHTML = '<i class="fas fa-magic"></i> Crear Invitación';
+      respuesta.className = 'message error';
+      respuesta.style.display = 'block';
+      respuesta.textContent = '❌ Ocurrió un error inesperado.';
+    });
   });
 });
