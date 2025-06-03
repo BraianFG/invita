@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <?php include "assets/php/head.php" ;
-
-  ?>
+  <?php include "assets/php/head.php"; ?>
   <link rel="stylesheet" href="./assets/css/footer.css">
 </head>
-  <body>
+<body>
 
 <header>
   <div class="container">
@@ -53,7 +51,7 @@
             </select>
           </div>
 
-          <div id="otroEventoContainer" class="conditional-field">
+          <div id="otroEventoContainer" class="conditional-field" style="display: none;">
             <label for="otroEvento">Especificar tipo de evento</label>
             <div class="input-wrapper">
               <input type="text" id="otroEvento" name="otroEvento" placeholder="Describí tu evento">
@@ -86,12 +84,90 @@
           </div>
         </div>
 
+     <div class="form-group">
+  <label><i class="fas fa-images"></i> Elegí el modelo de invitación</label>
+  <div class="scroll-modelos" id="modeloSelector">
+    <div class="modelo seleccionado" data-modelo="modelo1">
+      <img src="invitaciones/img/modelos/modelo1.png" alt="Modelo 1">
+    </div>
+    <div class="modelo" data-modelo="modelo2">
+      <img src="invitaciones/img/modelos/modelo2.png" alt="Modelo 2">
+    </div>
+    <div class="modelo" data-modelo="modelo3">
+      <img src="invitaciones/img/modelos/modelo3.png" alt="Modelo 3">
+    </div>
+  </div>
+  <input type="hidden" name="modelo" id="modeloSeleccionado" value="modelo1">
+</div>
+
+<style>
+<style>
+  .scroll-modelos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    overflow-x: auto;
+    padding: 10px 0;
+    margin-top: 10px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .scroll-modelos::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .scroll-modelos::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+  }
+
+  .modelo {
+    flex: 0 0 auto;
+    width: 160px;
+    border: 3px solid transparent;
+    border-radius: 12px;
+    scroll-snap-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: border 0.3s, transform 0.3s;
+    background: white;
+  }
+
+  .modelo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+  }
+
+  .modelo.seleccionado {
+    border: 3px solid #667eea;
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 768px) {
+    .modelo {
+      width: 120px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .modelo {
+      width: 100px;
+    }
+  }
+</style>
+
+</style>
+
+
+        <div class="message" id="respuesta" style="display: none;"></div>
+
         <button type="submit" class="submit-btn">
           <i class="fas fa-magic"></i> Crear Invitación
         </button>
       </form>
-
-      <div class="message" id="respuesta" style="display: none;"></div>
     </div>
   </div>
 </section>
@@ -99,14 +175,34 @@
 <section class="results-section" id="ver_invitaciones" style="display: none;">
   <div class="container">
     <div class="invitation-card fade-in-up">
-      <!-- Contenido dinámico aquí -->
+      <!-- Resultado dinámico -->
     </div>
   </div>
 </section>
 
+<script>
+  // Mostrar campo "otro" si corresponde
+  document.getElementById('evento').addEventListener('change', function () {
+    const otro = document.getElementById('otroEventoContainer');
+    otro.style.display = (this.value === 'otro') ? 'block' : 'none';
+  });
+
+  // Selección visual del modelo
+  const modelos = document.querySelectorAll('.modelo');
+  const inputModelo = document.getElementById('modeloSeleccionado');
+  modelos.forEach(modelo => {
+    modelo.addEventListener('click', () => {
+      modelos.forEach(m => m.classList.remove('seleccionado'));
+      modelo.classList.add('seleccionado');
+      inputModelo.value = modelo.dataset.modelo;
+    });
+  });
+</script>
+
 <script src="assets/js/footer.js"></script>
+
 <footer>
-    <?php include "assets/php/footer.php" ?>
+  <?php include "assets/php/footer.php"; ?>
 </footer>
 
 <script src="assets/js/footer-date.js"></script>
