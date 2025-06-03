@@ -448,3 +448,97 @@
       font-size: 0.9rem;
     }
   }
+
+
+.scroll-modelos {
+  display: flex;
+  overflow-x: auto;
+  gap: 12px;
+  padding: 10px;
+  margin-bottom: 20px;
+  scroll-behavior: smooth;
+}
+
+.scroll-modelos::-webkit-scrollbar {
+  height: 8px;
+}
+.scroll-modelos::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+.modelo {
+  flex: 0 0 auto;
+  cursor: pointer;
+  border: 3px solid transparent;
+  border-radius: 12px;
+  transition: border-color 0.3s;
+}
+.modelo img {
+  height: 100px;
+  border-radius: 12px;
+}
+
+.modelo.seleccionado {
+  border-color: #667eea;
+  box-shadow: 0 0 10px #667eea88;
+}
+
+.btn-descargar,
+.btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  margin: 10px 5px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #fff;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-descargar {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.btn-descargar:hover {
+  background: linear-gradient(135deg, #5a67d8, #6b46c1);
+  transform: translateY(-2px);
+}
+
+.btn-whatsapp {
+  background-color: #25D366;
+}
+
+.btn-whatsapp:hover {
+  background-color: #1ebe5c;
+  transform: translateY(-2px);
+}
+
+.fondo-mensaje {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.95);
+  color:  #4a5568;;
+  margin: 60px auto 0 auto; /* separa del navbar fijo */
+  padding: 100px;
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.3rem;
+}
+
+/* Para celulares: menos padding */
+@media (max-width: 600px) {
+  .fondo-mensaje {
+    padding: 40px 20px;
+    font-size: 1.1rem;
+  }
+}
+

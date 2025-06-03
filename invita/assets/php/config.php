@@ -29,3 +29,5 @@ function generate_unique_code($length = 8) {
     if ($length % 2 !== 0) $length++;
     return bin2hex(random_bytes($length / 2));
 }
+
+header('Content-Type: application/json; charset=utf-8');
