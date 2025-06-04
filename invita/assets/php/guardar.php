@@ -1,189 +1,196 @@
-<?php 
-header('Content-Type: application/json; charset=utf-8');
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+<?php
+// Configuración
+$directorioJSON = '../../invitaciones/json/';
+$directorioIMG  = '../../invitaciones/img/';
 
-$uploadDir = __DIR__ . '/../../invitaciones/img/';
-$jsonDir = __DIR__ . '/../../invitaciones/json/';
-$plantillasDir = $uploadDir . '../../invitaciones/img/modelos/';
-$fuentePath = __DIR__ . '/../../fuentes/GreatVibes-Regular.ttf';
+// Crear directorios si no existen
+if (!is_dir($directorioJSON)) mkdir($directorioJSON, 0755, true);
+if (!is_dir($directorioIMG)) mkdir($directorioIMG, 0755, true);
 
-if (!file_exists($uploadDir)) mkdir($uploadDir, 0755, true);
-if (!file_exists($jsonDir)) mkdir($jsonDir, 0755, true);
-
-function generarCodigo($length = 8) {
-    return substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, $length);
+// Validar datos
+$campos = ['nombre', 'fecha', 'hora', 'direccion', 'evento', 'mensaje', 'modelo'];
+foreach ($campos as $campo) {
+    if (empty($_POST[$campo])) {
+        http_response_code(400);
+        echo "Falta el campo: $campo";
+        exit;
+    }
 }
 
-$modelo     = $_POST['modelo'] ?? '';
-$evento     = trim($_POST['evento'] ?? '');
-$nombre     = trim($_POST['nombre'] ?? '');
-$mensaje    = trim($_POST['mensaje'] ?? '');
-$fecha      = trim($_POST['fecha'] ?? '');
-$hora       = trim($_POST['hora'] ?? '');
-$direccion  = trim($_POST['direccion'] ?? '');
+// Nombre del archivo
+$codigo = uniqid();
+$imagenFinal = '';
 
-if (!$evento) exit(json_encode(['success' => false, 'message' => 'Debes ingresar el nombre del evento.']));
-if (!$nombre) exit(json_encode(['success' => false, 'message' => 'El nombre es obligatorio.']));
-if (!$fecha) exit(json_encode(['success' => false, 'message' => 'La fecha es obligatoria.']));
-if (!$hora) exit(json_encode(['success' => false, 'message' => 'La hora es obligatoria.']));
-if (!$direccion) exit(json_encode(['success' => false, 'message' => 'La dirección es obligatoria.']));
-if (!$modelo || !$evento || !$nombre) exit(json_encode(['success' => false, 'message' => 'Faltan datos obligatorios.']));
+// Subir imagen
+$tiposPermitidos = ['image/jpeg', 'image/png', 'image/gif'];
+if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+    $tipoArchivo = $_FILES['imagen']['type'];
+    if (!in_array($tipoArchivo, $tiposPermitidos)) {
+        http_response_code(400);
+        echo "Tipo de archivo no permitido. Solo se permiten imágenes JPEG, PNG o GIF.";
+        exit;
+    }
 
-if (!isset($_FILES['imagen']) || $_FILES['imagen']['error'] !== UPLOAD_ERR_OK) {
-    exit(json_encode(['success' => false, 'message' => 'Error al subir la imagen.']));
+    $tmp  = $_FILES['imagen']['tmp_name'];
+    $ext  = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
+    $nombreArchivo = $codigo . '.' . strtolower($ext);
+    $destino = $directorioIMG . $nombreArchivo;
+
+    if (!move_uploaded_file($tmp, $destino)) {
+        http_response_code(500);
+        echo "Error al mover la imagen al directorio $destino.";
+        exit;
+    }
+    $imagenFinal = $nombreArchivo;
+
+    // Verificar que el archivo se haya guardado
+    if (!file_exists($destino)) {
+        http_response_code(500);
+        echo "La imagen no se encuentra en el servidor: $destino";
+        exit;
+    }
+} else {
+    http_response_code(400);
+    echo "Error en la carga de la imagen. Código de error: " . ($_FILES['imagen']['error'] ?? 'Desconocido');
+    exit;
 }
 
-$allowedTypes = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/gif' => 'gif'];
-$mime = $_FILES['imagen']['type'];
-if (!isset($allowedTypes[$mime])) {
-    exit(json_encode(['success' => false, 'message' => 'Formato de imagen no permitido.']));
-}
+// Obtener tipo de evento final
+$evento = $_POST['evento'] === 'otro' ? $_POST['otroEvento'] : $_POST['evento'];
 
-$codigo = generarCodigo();
-$ext = $allowedTypes[$mime];
-$nombreImagen = 'foto_' . $codigo . '.' . $ext;
-$rutaImagen = $uploadDir . $nombreImagen;
-
-if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaImagen)) {
-    exit(json_encode(['success' => false, 'message' => 'No se pudo guardar la imagen.']));
-}
-
-// Crear JSON
-$datosInvitacion = [
-    'success' => true,
-    'codigo' => $codigo,
-    'modelo' => $modelo,
-    'evento' => $evento,
-    'nombre' => $nombre,
-    'imagen' => $nombreImagen,
-    'mensaje' => $mensaje,
-    'fecha' => $fecha,
-    'hora' => $hora,
-    'direccion' => $direccion,
-    'fecha_creacion' => date('Y-m-d H:i:s')
+// Guardar JSON
+$datos = [
+    'codigo'    => $codigo,
+    'nombre'    => $_POST['nombre'],
+    'fecha'     => $_POST['fecha'],
+    'hora'      => $_POST['hora'],
+    'direccion' => $_POST['direccion'],
+    'evento'    => $evento,
+    'mensaje'   => $_POST['mensaje'],
+    'modelo'    => $_POST['modelo'],
+    'imagen'    => $imagenFinal
 ];
 
-file_put_contents($jsonDir . $codigo . '.json', json_encode($datosInvitacion, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+file_put_contents($directorioJSON . $codigo . ".json", json_encode($datos, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
-// ============= GENERAR IMAGEN FINAL ============= //
-$plantillaPath = $plantillasDir . $modelo . '.png';
-if (!file_exists($plantillaPath)) {
-    exit(json_encode(['success' => false, 'message' => 'No se encontró la plantilla.']));
-}
+// Configurar fecha bonita
+setlocale(LC_TIME, 'es_ES.UTF-8');
+$timestamp = strtotime($datos['fecha']);
+$fechaBonita = strftime("%A %e de %B", $timestamp);
+$fechaBonita = ucfirst($fechaBonita);
 
-$base = imagecreatefrompng($plantillaPath);
-imagealphablending($base, true);
-imagesavealpha($base, true);
+// Imagen de fondo según modelo
+$modeloPath = "invitaciones/img/modelos/{$datos['modelo']}.png";
 
-$userImg = imagecreatefromstring(file_get_contents($rutaImagen));
-if (!$userImg) {
-    exit(json_encode(['success' => false, 'message' => 'No se pudo procesar la imagen subida.']));
-}
-
-$destW = 200;
-$destH = 200;
-$resized = imagecreatetruecolor($destW, $destH);
-imagealphablending($resized, false);
-imagesavealpha($resized, true);
-imagecopyresampled($resized, $userImg, 0, 0, 0, 0, $destW, $destH, imagesx($userImg), imagesy($userImg));
-imagecopy($base, $resized, 50, 50, 0, 0, $destW, $destH);
-
-$negro = imagecolorallocate($base, 0, 0, 0);
-
-// Mensaje natural
-// Traducción manual de días y meses
-function traducirFecha($fechaYmd) {
-    $dias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
-    $meses = [
-        '01' => 'enero', '02' => 'febrero', '03' => 'marzo', '04' => 'abril',
-        '05' => 'mayo', '06' => 'junio', '07' => 'julio', '08' => 'agosto',
-        '09' => 'septiembre', '10' => 'octubre', '11' => 'noviembre', '12' => 'diciembre'
-    ];
-
-    $timestamp = strtotime($fechaYmd);
-    if (!$timestamp) return $fechaYmd;
-
-    $diaSemana = $dias[date('w', $timestamp)];
-    $diaMes = date('j', $timestamp);
-    $mesNombre = $meses[date('m', $timestamp)];
-
-    return ucfirst("$diaSemana $diaMes de $mesNombre");
-}
-
-// Generar mensaje natural
-$fechaBonita = traducirFecha($fecha);
-$mensajeFinal = "Te invitamos al $evento de $nombre.\n";
-
-if ($fechaBonita && $hora) {
-    $mensajeFinal .= "Será el $fechaBonita a las $hora hs.\n";
-} elseif ($fechaBonita) {
-    $mensajeFinal .= "Será el $fechaBonita.\n";
-} elseif ($hora) {
-    $mensajeFinal .= "Será a las $hora hs.\n";
-}
-
-if ($direccion) {
-    $mensajeFinal .= "En $direccion.\n";
-}
-
-if ($mensaje) {
-    $mensajeFinal .= "$mensaje 🎉";
-}
-
-// Mostrar nombre y evento
-if (file_exists($fuentePath)) {
-    imagettftext($base, 30, 0, 300, 150, $negro, $fuentePath, $nombre);
-    imagettftext($base, 20, 0, 300, 200, $negro, $fuentePath, $evento);
-} else {
-    imagestring($base, 5, 300, 150, $nombre, $negro);
-    imagestring($base, 3, 300, 180, $evento, $negro);
-}
-
-// Mostrar mensaje natural (multilínea)
-$fontSize = 16;
-$maxWidth = imagesx($base) - 100;
-$lineHeight = 30;
-$startX = 50;
-$startY = 300;
-
-if (file_exists($fuentePath)) {
-    $words = explode(' ', $mensajeFinal);
-    $line = '';
-    $lines = [];
-    foreach ($words as $word) {
-        $testLine = $line . ' ' . $word;
-        $bbox = imagettfbbox($fontSize, 0, $fuentePath, $testLine);
-        $lineWidth = $bbox[2] - $bbox[0];
-        if ($lineWidth < $maxWidth) {
-            $line = $testLine;
-        } else {
-            $lines[] = trim($line);
-            $line = $word;
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Invitación Generada</title>
+    <style>
+        .tarjeta-final {
+            position: relative;
+            background: url('<?= $modeloPath ?>') no-repeat center/cover;
+            width: 100%;
+            max-width: 600px;
+            margin: 18px auto;
+            border-radius: 20px;
+            padding: 9vw 9vw 10vw;
+            color: #222;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            font-family: 'Arial', sans-serif;
+            box-sizing: border-box;
         }
-    }
-    if ($line) $lines[] = trim($line);
+        .tarjeta-final img {
+            width: 30vw;
+            max-width: 140px;
+            aspect-ratio: 1 / 1;
+            height: auto;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #fff;
+            margin: 0 auto 20px auto;
+            display: block;
+        }
+        .tarjeta-final h2 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 8vw;
+            max-font-size: 46px;
+            margin: 0;
+        }
+        .tarjeta-final h3 {
+            font-size: 5vw;
+            max-font-size: 24px;
+            margin-top: 10px;
+        }
+        .tarjeta-final p {
+            margin: 15px 0 10px;
+            font-size: 4vw;
+            max-font-size: 18px;
+        }
+        .tarjeta-final p:last-of-type {
+            margin-top: 10px;
+            font-style: italic;
+            font-size: 3.8vw;
+            max-font-size: 16px;
+        }
+        .download-button {
+            padding: 10px 20px;
+            background: #fff;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="tarjeta-final">
+<img src="<?= htmlspecialchars($directorioIMG . $imagenFinal) ?>" alt="Foto invitado">
+        <h2><?= htmlspecialchars($datos['nombre']) ?></h2>
+        <h3><?= htmlspecialchars($evento) ?></h3>
+        <p>Será el <?= $fechaBonita ?> a las <?= htmlspecialchars($datos['hora']) ?> hs</p>
+        <p>En <?= htmlspecialchars($datos['direccion']) ?></p>
+        <p>"<?= nl2br(htmlspecialchars($datos['mensaje'])) ?>"</p>
+    </div>
 
-    foreach ($lines as $i => $txt) {
-        $bbox = imagettfbbox($fontSize, 0, $fuentePath, $txt);
-        $textWidth = $bbox[2] - $bbox[0];
-        $x = ($maxWidth - $textWidth) / 2 + $startX;
-        $y = $startY + $i * $lineHeight;
-        imagettftext($base, $fontSize, 0, $x, $y, $negro, $fuentePath, $txt);
-    }
-} else {
-    imagestring($base, 3, $startX, $startY, $mensajeFinal, $negro);
-}
+    <div style="text-align: center; margin-top: 20px;">
+        <button class="download-button" onclick="descargarImagen()">Descargar invitación</button>
+    </div>
 
-$imagenFinal = 'inv_' . $codigo . '.png';
-$outputPath = $uploadDir . $imagenFinal;
-imagepng($base, $outputPath);
-imagedestroy($base);
-imagedestroy($userImg);
-imagedestroy($resized);
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        window.descargarImagen = function() {
+            const tarjeta = document.querySelector('.tarjeta-final');
+            if (!tarjeta) {
+                alert("No se encontró la tarjeta para descargar.");
+                return;
+            }
 
-echo json_encode([
-    'success' => true,
-    'file' => $codigo
-]);
-exit;
+            const img = tarjeta.querySelector('img');
+            if (!img.complete) {
+                img.onload = function() {
+                    html2canvas(tarjeta).then(canvas => {
+                        const link = document.createElement('a');
+                        link.download = 'invitacion.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                    });
+                };
+            } else {
+                html2canvas(tarjeta).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'invitacion.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                });
+            }
+        };
+    </script>
+</body>
+</html>
