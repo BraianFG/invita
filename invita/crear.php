@@ -54,7 +54,7 @@
           </div>
 
           <div id="otroEventoContainer" class="conditional-field" style="display: none;">
-            <label for="otroEvento">Especificar tipo de evento</label>
+            <label for="otroEvento">Especifíque tipo de evento</label>
             <div class="input-wrapper">
               <input type="text" id="otroEvento" name="otroEvento" placeholder="Describí tu evento">
             </div>
@@ -75,16 +75,46 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label><i class="fas fa-image"></i> Imagen para la tarjeta</label>
-          <div class="file-input-wrapper">
-            <input type="file" id="imagen" name="imagen" accept="image/*" required>
-            <label for="imagen" class="file-input-label">
-              <i class="fas fa-cloud-upload-alt"></i>
-              <span>Seleccionar imagen</span>
-            </label>
-          </div>
-        </div>
+<div class="form-group">
+  <label><i class="fas fa-image"></i> Imagen para la tarjeta</label>
+  <div class="file-input-wrapper">
+    <input type="file" id="imagen" name="imagen" accept="image/*" required>
+    <label for="imagen" class="file-input-label">
+      <i class="fas fa-cloud-upload-alt"></i>
+      <span>Seleccionar imagen</span>
+    </label>
+  </div>
+  <div id="preview" style="margin-top: 10px;"></div>
+</div>
+
+<script>
+    document.getElementById('imagen').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('preview');
+    preview.innerHTML = '';
+    if (file) {
+        if (!file.type.startsWith('image/')) {
+            alert('Por favor, selecciona un archivo de imagen válido.');
+            this.value = ''; // Limpia el input
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.maxWidth = '70px';
+            img.style.width = '70px'; // Fija el ancho
+            img.style.height = '70px'; // Fija el alto para hacerlo cuadrado
+            img.style.borderRadius = '4px'; // Ajusta el borde redondeado
+            img.style.objectFit = 'cover'; // Asegura que la imagen llene el espacio
+            img.style.display = 'block'; // Asegura que la imagen sea un bloque
+            img.style.margin = '0 auto'; // Centra la imagen horizontalmente
+            preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
 
      <div class="form-group">
   <label><i class="fas fa-images"></i> Elegí el modelo de invitación</label>
@@ -121,14 +151,15 @@
   </div>
 </section>
 
-<script src="assets/js/seleccionar.js"></script>
-
-<script src="assets/js/footer.js"></script>
 
 <footer>
   <?php include "assets/php/footer.php"; ?>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="assets/js/seleccionar.js"></script>
+<script src="assets/js/footer.js"></script>
 <script src="assets/js/footer-date.js"></script>
 </body>
 </html>
+
