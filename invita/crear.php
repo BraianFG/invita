@@ -2,13 +2,14 @@
 <html lang="es">
 <head>
   <?php include "assets/php/head.php"; ?>
-  <link rel="stylesheet" href="./assets/css/footer.css">
+  <link rel="stylesheet" href="./assets/css/crear.css">
   <link rel="stylesheet" href="./assets/css/nav.css">
+    <link rel="stylesheet" href="./assets/css/footer.css">
 </head>
 <body>
 
   <?php include "assets/php/navbar.php" ?>
-
+  <script src="assets/js/navbar.js"></script>
 <section class="fondo-mensaje">
  <div class="container">
     <h1>Creá tu invitación</h1>
@@ -151,10 +152,7 @@
   </div>
 </section>
 
-
-<footer>
   <?php include "assets/php/footer.php"; ?>
-</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="assets/js/seleccionar.js"></script>
@@ -162,4 +160,3 @@
 <script src="assets/js/footer-date.js"></script>
 </body>
 </html>
-
