@@ -4,7 +4,7 @@
   <?php include "assets/php/head.php"; ?>
   <link rel="stylesheet" href="./assets/css/crear.css">
   <link rel="stylesheet" href="./assets/css/nav.css">
-    <link rel="stylesheet" href="./assets/css/footer.css">
+  <link rel="stylesheet" href="./assets/css/footer.css">
 </head>
 <body>
 
