@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Error 403 - Acceso Denegado</title>
+  <style>
+    :root {
+      --violeta: #6a11cb;
+      --rosa: #ff69b4;
+      --fondo: linear-gradient(135deg, #6a11cb 0%, #ff69b4 100%);
+      --blanco: #ffffff;
+      --sombra: rgba(0, 0, 0, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      background: var(--fondo);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--blanco);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .error-container {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px var(--sombra);
+      max-width: 500px;
+    }
+
+    h1 {
+      font-size: 6rem;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 1rem;
+      margin-bottom: 30px;
+    }
+
+    a {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: var(--blanco);
+      color: var(--violeta);
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+
+    a:hover {
+      background-color: #f0f0f0;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 4rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="error-container">
+    <h1>403</h1>
+    <h2>Acceso Denegado</h2>
+    <p>No tienes permiso para ver esta página.<br>
+    Por favor, verifica tus credenciales o vuelve al inicio.</p>
+    <a href="./">Volver al Inicio</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,72 @@
+/* Footer Estilo Glassmorphism */
+footer {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 60px 20px;
+  text-align: center;
+  color: #4a5568;
+  position: relative;
+  z-index: 1;
+}
+
+footer .footer-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+footer h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: white;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+footer p {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 20px;
+  color: #718096
+}
+
+footer a {
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0 10px;
+  transition: color 0.3s;
+}
+
+footer a:hover {
+  color: #f093fb;
+}
+
+footer .social-icons {
+  margin-top: 20px;
+}
+
+footer .social-icons a {
+  display: inline-block;
+  margin: 0 10px;
+  font-size: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+footer .social-icons a:hover {
+  transform: scale(1.2);
+  color: #f5576c;
+}
+
+footer .copyright {
+  margin-top: 40px;
+  font-size: 0.9rem;
+}
+
+.footer-nav a {
+    color: #667eea;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 12px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}

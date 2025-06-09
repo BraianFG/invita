@@ -1,252 +1,161 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Invitaciones Digitales</title>
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Open+Sans&display=swap" rel="stylesheet"/>
-      <!-- Meta generales -->
-    <meta name="description" content="Creá tu invitación digital personalizada en segundos. Completá los datos de tu evento y compartila fácilmente.">
-    <meta name="keywords" content="invitaciones digitales, tarjeta de invitación, crear invitación online, eventos, bodas, cumpleaños">
-    <meta name="author" content="TuNombre o TuWeb">
-    
-    <!-- Open Graph para Facebook, WhatsApp, LinkedIn -->
-    <meta property="og:title" content="Invitaciones Digitales Personalizadas">
-    <meta property="og:description" content="Completá los datos de tu evento y generá tu tarjeta de invitación digital al instante.">
-    <meta property="og:url" content="https://braianfg.com.ar/invitaciones">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Invitaciones Digitales">
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Invitaciones Digitales Personalizadas">
-    <meta name="twitter:description" content="Completá los datos de tu evento y generá tu invitación online lista para compartir.">
-    <meta name="twitter:url" content="https://tusitio.com/invitaciones">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Open Sans', sans-serif;
-      background: linear-gradient(to bottom right, #fff0f5, #ffe4e1);
-      color: #333;
-      text-align: center;
-    }
+  <!-- Preconexiones recomendadas -->
+<!-- Conexiones anticipadas para mejorar la carga de recursos externos -->
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    header {
-      padding: 50px 20px;
-      background-color: #fff;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
+<!-- Preload de fuentes de Google con carga diferida (evita bloqueo de renderizado) -->
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap">
+</noscript>
 
-    header h1 {
-      font-family: 'Great Vibes', cursive;
-      font-size: 3em;
-      color: #d87093;
-      margin-bottom: 10px;
-    }
+<?php include "assets/php/head.php"; ?>
 
-    header p {
-      font-size: 1.2em;
-      color: #555;
-    }
+<!-- Tus estilos locales (bloqueantes pero necesarios para render) -->
+<link rel="stylesheet" href="./assets/css/crear.css">
+<link rel="stylesheet" href="./assets/css/nav.css">
+<link rel="stylesheet" href="./assets/css/footer.css">
 
-    #formulario {
-      padding: 40px 20px;
-      background: #fff0f5;
-    }
-
-    form {
-      max-width: 600px;
-      margin: 30px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      text-align: left;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 10px;
-      font-weight: bold;
-      color: #444;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 20px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 1em;
-    }
-
-    button {
-      background: #d87093;
-      color: white;
-      border: none;
-      padding: 15px 30px;
-      border-radius: 30px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    button:hover {
-      background: #c06085;
-    }
-
-    .mensaje-envio {
-      text-align: center;
-      margin-top: 20px;
-      color: green;
-      font-weight: bold;
-    }
-
-    #ver_invitaciones img {
-      max-width: 100%;
-      margin-top: 20px;
-      border-radius: 15px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    #ver_invitaciones{
-      background: #fff0f5;
-    }
-    
-  </style>
 </head>
 <body>
+  <?php include "assets/php/navbar.php"; ?>
 
-<header>
-  <h1>Creá tu invitación</h1>
-  <p>Completá los datos de tu evento y comenzá con tu invitación digital personalizada.</p>
-</header>
+  <!-- JS diferido -->
+  <script src="assets/js/navbar.js" defer></script>
 
-<section id="formulario">
-  <form id="invitacionForm" enctype="multipart/form-data">
-    <label for="fecha">Fecha del evento</label>
-    <input type="date" id="fecha" name="fecha" required>
-
-    <label for="hora">Horario</label>
-    <input type="time" id="hora" name="hora" required>
-
-    <label for="direccion">Dirección</label>
-    <input type="text" id="direccion" name="direccion" required>
-
-    <label for="evento">Tipo de evento</label>
-    <select id="evento" name="evento" required>
-      <option value="">Seleccionar...</option>
-      <option value="boda">Boda</option>
-      <option value="cumpleaños">Cumpleaños</option>
-      <option value="baby_shower">Baby Shower</option>
-      <option value="bautismo">Bautismo</option>
-      <option value="otro">Otro</option>
-    </select>
-
-    <div id="otroEventoContainer" style="display:none; margin-top:10px;">
-      <label for="otroEvento">Especificar tipo de evento</label>
-      <input type="text" id="otroEvento" name="otroEvento">
+  <section class="fondo-mensaje">
+    <div class="container">
+      <h3>Creá tu invitación</h3>
+      <p>Completá los datos de tu evento y comenzá con tu invitación digital personalizada</p>
     </div>
+  </section>
+  
+  <section class="main-section">
+    <div class="container">
+      <div class="form-container fade-in-up">
+        <form id="invitacionForm" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="fecha"><i class="fas fa-calendar-alt"></i> Fecha del evento</label>
+          <div class="input-wrapper">
+            <input type="date" id="fecha" name="fecha" required>
+          </div>
+        </div>
 
-    <label for="mensaje">Mensaje personalizado</label>
-    <textarea id="mensaje" name="mensaje" rows="4" required></textarea>
+        <div class="form-group">
+          <label for="hora"><i class="fas fa-clock"></i> Horario</label>
+          <div class="input-wrapper">
+            <input type="time" id="hora" name="hora" required>
+          </div>
+        </div>
 
-    <label for="nombre">Nombre, apellido y/o apodo de la persona a invitar</label>
-    <input type="text" id="nombre" name="nombre" required>
+        <div class="form-group">
+          <label for="direccion"><i class="fas fa-map-marker-alt"></i> Dirección</label>
+          <div class="input-wrapper">
+            <input type="text" id="direccion" name="direccion" placeholder="Ingresá la dirección del evento" required>
+          </div>
+        </div>
 
-    <label for="imagen">Subir imagen para la tarjeta</label>
-    <input type="file" id="imagen" name="imagen" accept="image/*" required>
+        <div class="form-group">
+          <label for="evento"><i class="fas fa-star"></i> Tipo de evento</label>
+          <div class="input-wrapper">
+            <select id="evento" name="evento" required>
+              <option value="">Seleccionar tipo de evento...</option>
+              <option value="boda">💍 Boda</option>
+              <option value="cumpleaños">🎂 Cumpleaños</option>
+              <option value="baby_shower">👶 Baby Shower</option>
+              <option value="bautismo">✨ Bautismo</option>
+              <option value="otro">🎉 Otro</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Este bloque va por fuera del select y su input-wrapper -->
+        <div class="form-group" id="otroEventoContainer" style="display: none;">
+          <label for="otroEvento">Especifique tipo de evento</label>
+          <div class="input-wrapper">
+            <input type="text" id="otroEvento" name="otroEvento" placeholder="Describí tu evento">
+          </div>
+        </div>
 
-    <button type="submit">Enviar datos</button>
-  </form>
+        <div class="form-group">
+          <label for="mensaje"><i class="fas fa-heart"></i> Mensaje personalizado</label>
+          <div class="input-wrapper">
+            <textarea id="mensaje" name="mensaje" placeholder="Escribí un mensaje especial para tus invitados..." required></textarea>
+          </div>
+        </div>
 
-  <div class="mensaje-envio" id="respuesta"></div>
-</section>
+        <div class="form-group">
+          <label for="nombre"><i class="fas fa-user"></i> Nombre del invitado</label>
+          <div class="input-wrapper">
+            <input type="text" id="nombre" name="nombre" placeholder="Nombre, apellido y/o apodo de la persona a invitar" required>
+          </div>
+        </div>
 
-<section id="ver_invitaciones" style="padding: 40px 20px"></section>
+   <!-- Imagen -->
+          <div class="form-group">
+            <label><i class="fas fa-image"></i> Imagen para la tarjeta</label>
+            <div class="file-input-wrapper">
+              <input type="file" id="imagen" name="imagen" accept="image/*" required>
+              <label for="imagen" class="file-input-label">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>Seleccionar imagen</span>
+              </label>
+            </div>
+            <div id="preview" style="margin-top: 10px;"></div>
+          </div>
 
-<script>
-document.getElementById('evento').addEventListener('change', function () {
-  const otroEventoContainer = document.getElementById('otroEventoContainer');
-  if (this.value === 'otro') {
-    otroEventoContainer.style.display = 'block';
-  } else {
-    otroEventoContainer.style.display = 'none';
-  }
-});
+   <div class="form-group">
+            <label><i class="fas fa-images"></i> Elegí el modelo de invitación</label>
+            <div class="scroll-modelos" id="modeloSelector">
+              <div class="modelo seleccionado" data-modelo="modelo1">
+                <img src="invitaciones/img/modelos/modelo1.png" width="48" height="48" alt="Modelo 1" loading="lazy">
+              </div>
+              <div class="modelo" data-modelo="modelo2">
+                <img src="invitaciones/img/modelos/modelo2.png" width="48" height="48" alt="Modelo 2" loading="lazy">
+              </div>
+              <div class="modelo" data-modelo="modelo3">
+                <img src="invitaciones/img/modelos/modelo3.png" width="48" height="48" alt="Modelo 3" loading="lazy">
+              </div>
+            </div>
+            <input type="hidden" name="modelo" id="modeloSeleccionado" value="modelo1">
+          </div>
 
-document.getElementById('invitacionForm').addEventListener('submit', function(e) {
-  e.preventDefault();
+          <div class="message" id="respuesta" style="display: none;"></div>
 
-  const formData = new FormData(this);
-  const tipoEvento = document.getElementById('evento').value;
-  const otroEvento = document.getElementById('otroEvento').value;
+          <button type="submit" class="submit-btn">
+            <i class="fas fa-magic"></i> Crear Invitación
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
 
-  if (tipoEvento === 'otro' && otroEvento.trim() !== '') {
-    formData.set('evento', otroEvento);
-  } else {
-    formData.set('evento', tipoEvento);
-  }
+  <section class="results-section" id="ver_invitaciones" style="display: none;">
+    <div class="container">
+      <div class="invitation-card fade-in-up">
+        <!-- Resultado dinámico -->
+      </div>
+    </div>
+  </section>
 
-  fetch('guardar.php', {
-    method: 'POST',
-    body: formData
-  })
-  .then(res => res.json())
-  .then(data => {
-    const contenedor = document.getElementById('ver_invitaciones');
-    contenedor.innerHTML = '';
+  <?php include "assets/php/footer.php"; ?>
 
-    if (data.estado === 'ok') {
-      const imgUrl = 'generar_invitacion.php?codigo=' + encodeURIComponent(data.codigo) + '&t=' + Date.now();
 
-      const img = document.createElement('img');
-      img.src = imgUrl;
-      img.alt = 'Invitación generada';
-      img.style.maxWidth = '400px';
-      contenedor.appendChild(img);
+  <!-- Scripts (usando defer) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+  <script src="assets/js/verImagen.js" defer></script>
+  <script src="assets/js/seleccionar.js" defer></script>
+  <script src="assets/js/footer.js" defer></script>
+  <script src="assets/js/footer-date.js" defer></script>
 
-      const info = document.createElement('div');
-      info.textContent = `Código: ${data.codigo}`;
-      contenedor.appendChild(info);
-
-      const botonDescarga = document.createElement('a');
-      botonDescarga.href = imgUrl;
-      botonDescarga.download = 'invitacion_' + data.codigo + '.png';
-      botonDescarga.textContent = '📥 Descargar invitación';
-      botonDescarga.style.display = 'inline-block';
-      botonDescarga.style.margin = '15px 10px';
-      botonDescarga.style.padding = '10px 20px';
-      botonDescarga.style.backgroundColor = '#d87093';
-      botonDescarga.style.color = 'white';
-      botonDescarga.style.borderRadius = '20px';
-      botonDescarga.style.textDecoration = 'none';
-      contenedor.appendChild(botonDescarga);
-
-      const botonWhatsApp = document.createElement('a');
-      const mensajeWA = `¡Hola! Te comparto una invitación: ${imgUrl}`;
-      botonWhatsApp.href = `https://wa.me/?text=${encodeURIComponent(mensajeWA)}`;
-      botonWhatsApp.target = '_blank';
-      botonWhatsApp.textContent = '📤 Compartir por WhatsApp';
-      botonWhatsApp.style.display = 'inline-block';
-      botonWhatsApp.style.margin = '15px 10px';
-      botonWhatsApp.style.padding = '10px 20px';
-      botonWhatsApp.style.backgroundColor = '#25D366';
-      botonWhatsApp.style.color = 'white';
-      botonWhatsApp.style.borderRadius = '20px';
-      botonWhatsApp.style.textDecoration = 'none';
-      contenedor.appendChild(botonWhatsApp);
-    } else {
-      contenedor.textContent = 'Error: ' + (data.mensaje || 'Algo salió mal');
-    }
-  })
-  .catch(err => {
-    console.error(err);
-    document.getElementById('ver_invitaciones').textContent = 'Error al enviar datos.';
-  });
-});
-</script>
-
+  <!-- Script inline para preview, sin bloqueo -->
+  
 </body>
 </html>
